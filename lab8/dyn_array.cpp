@@ -1,0 +1,97 @@
+#include "dyn_array.h"
+
+void dyn_array::copy(const datatype * from, datatype * to, int size)
+{
+	for (int i = 0; i < size; ++i) to[i] = from[i];
+}
+
+dyn_array::dyn_array()
+{
+	size = 1;
+	data = new datatype[size];
+	data[0] = 0;
+}
+
+dyn_array::dyn_array(int size): size(size)
+{
+	data = new datatype[size];
+	for (int i = 0; i < size; ++i) data[i] = 0;
+}
+
+dyn_array::~dyn_array()
+{
+	delete[] data;
+}
+
+dyn_array::dyn_array(const dyn_array & d)
+{
+	size = d.size;
+	data = new datatype[size];
+	for (int i = 0; i < size; ++i)
+		data[i] = d.data[i];
+
+}
+
+dyn_array & dyn_array::operator=(const dyn_array & d)
+{
+	size = d.size;
+	delete[] data;
+	data = new datatype[size];
+	for (int i = 0; i < size; ++i)
+		data[i] = d.data[i];
+	return *this;
+}
+
+void dyn_array::resize(int new_size)
+{
+	if (new_size == size) return;
+	datatype *data_new;
+	data_new = new datatype[new_size];
+	if (new_size > size)
+		copy(data, data_new, size);
+	else
+		copy(data, data_new, new_size);
+	delete[] data;
+	data = data_new;
+	size = new_size;
+}
+
+void dyn_array::append(const datatype & x)
+{
+	this->resize(size + 1);
+	data[size - 1] = x;
+}
+
+void dyn_array::insert(int index, const datatype & x)
+{
+	this->resize(size + 1);
+	for (int i = size - 1; index < i; --i)
+		std::swap (data[i], data[i - 1]);
+	data[index] = x;
+}
+
+void dyn_array::remove(int index)
+{
+	for (int i = index; i < size - 2; ++i)
+		std::swap(data[i], data[i + 1]);
+	this->resize(size - 1);
+}
+
+int dyn_array::find(const datatype & x) const
+{
+	for (int i = 0; i < size; ++i)
+		if (data[i] == x) return i;
+	return -1;
+}
+
+std::istream & operator>>(std::istream & is, dyn_array & p)
+{
+	is >> p.size;
+	p.resize(p.size);
+	for (int i = 0; i < p.size; ++i)
+	{
+		is >> p.data[i];
+	}
+	return is;
+}
+
