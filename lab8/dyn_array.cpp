@@ -7,9 +7,10 @@ void dyn_array::copy(const datatype * from, datatype * to, int size)
 
 dyn_array::dyn_array()
 {
-	size = 1;
+	size = 2;
 	data = new datatype[size];
 	data[0] = 0;
+	data[1] = 0;
 }
 
 dyn_array::dyn_array(int size): size(size)
@@ -20,7 +21,10 @@ dyn_array::dyn_array(int size): size(size)
 
 dyn_array::~dyn_array()
 {
+	
+	if (data!=nullptr)
 	delete[] data;
+
 }
 
 dyn_array::dyn_array(const dyn_array & d)
@@ -35,7 +39,7 @@ dyn_array::dyn_array(const dyn_array & d)
 dyn_array & dyn_array::operator=(const dyn_array & d)
 {
 	size = d.size;
-	delete[] data;
+	if (data) delete[] data;
 	data = new datatype[size];
 	for (int i = 0; i < size; ++i)
 		data[i] = d.data[i];
@@ -51,7 +55,7 @@ void dyn_array::resize(int new_size)
 		copy(data, data_new, size);
 	else
 		copy(data, data_new, new_size);
-	delete[] data;
+	if (data) delete[] data;
 	data = data_new;
 	size = new_size;
 }
@@ -86,12 +90,25 @@ int dyn_array::find(const datatype & x) const
 
 std::istream & operator>>(std::istream & is, dyn_array & p)
 {
-	is >> p.size;
-	p.resize(p.size);
+	int a;
+	is >> a;
+
+	p.resize(a); std::cout << p.size << std::endl;
 	for (int i = 0; i < p.size; ++i)
 	{
 		is >> p.data[i];
 	}
+	p.size = a;
 	return is;
+}
+
+std::ostream & operator<<(std::ostream & os, const dyn_array & p)
+{
+	os << p.size;
+	for (int i = 0; i < p.size; ++i)
+	{
+		os <<" "<< p.data[i];
+	}
+	return os;
 }
 

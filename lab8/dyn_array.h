@@ -83,5 +83,5 @@ public:
 
 	// ввод из фаила
 	friend std::istream &operator>>(std::istream &is, dyn_array &p);
-	
+	friend std::ostream &operator<<(std::ostream &os, const dyn_array &p);
 };

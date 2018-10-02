@@ -15,7 +15,7 @@ bool test_count()
 
 bool test_resize()
 {
-	dyn_array a(6);
+	dyn_array a;
 	a.resize(7);
 	assert( a.count() == 7); 
 	a.resize(4);
