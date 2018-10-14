@@ -4,6 +4,9 @@
 //
 #pragma once
 #include <iostream>
+#include <string>
+
+
 class dyn_array
 {
 public:
@@ -20,6 +23,8 @@ private:
     // Функция копирования знасений из массива в массив
     void copy(const datatype *from, datatype* to, int size);
 
+	//swap
+	void swap(dyn_array &a);
 public:
 
     /*
@@ -35,32 +40,58 @@ public:
     // Деструктор
     ~dyn_array();
 
-    // Конструктор копии
-    dyn_array(const dyn_array& d);
-
+    // Конструктор копии (перемещаюший)
+    dyn_array( dyn_array &&d);
+    dyn_array(const dyn_array & d);
     /*
     Операции
     */
 
-    // Операция присваивания
-    dyn_array &operator=(const dyn_array& d);
+    // Операция присваивания (перемещаюший)
+    dyn_array &operator=(dyn_array d);
+
+	
+
+	dyn_array &operator=(dyn_array &&d);
+
 
     // Операция доступа к элементам
     datatype &operator[](int index)
 	{
+
+		try {
+			if (index >= size) throw std::out_of_range("Выход за пределы массива!!! ");
 			return data[index];
+		}
+		catch (std::out_of_range a)
+		{
+			std::cout << a.what();
+		}
 	}
 
     // Операция доступа к элементам для чтения
     datatype operator[](int index) const
 	{
+		try {
+			if (index >= size) throw std::out_of_range("Выход за пределы массива!!! ");
 		return data[index];
+	}
+	catch (std::out_of_range a)
+	{
+		std::cout << a.what();
+	}
 	}
 
 
     /*
     Методы
     */
+	//сортировка массива (a=true по возрастанию)
+	void sort(bool a = true);
+	//удаление дубликатов 
+	void unique();
+	// добовление в конец строки другого массива
+	void append(dyn_array &a);
 
     // Количество элементов в массиве
 	int count() const { return size; };
@@ -84,4 +115,7 @@ public:
 	// ввод из фаила
 	friend std::istream &operator>>(std::istream &is, dyn_array &p);
 	friend std::ostream &operator<<(std::ostream &os, const dyn_array &p);
+
+	//сравнение на равенство
+	friend bool operator==(dyn_array a, dyn_array b);
 };
